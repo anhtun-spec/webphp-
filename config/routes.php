@@ -1,0 +1,80 @@
+<?php
+declare(strict_types=1);
+
+return [
+    // Public routes
+    ['GET',  '/',                              'HomeController@index'],
+    ['GET',  '/search',                        'SearchController@index'],
+    ['GET',  '/faculties',                     'CategoryController@faculties'],
+    ['GET',  '/faculties/{id}',                'CategoryController@faculty'],
+    ['GET',  '/subjects/{id}',                 'CategoryController@subject'],
+    ['GET',  '/documents',                     'DocumentController@index'],
+    ['GET',  '/documents/create',              'DocumentController@create'],
+    ['POST', '/documents',                     'DocumentController@store'],
+    ['GET',  '/documents/{id}',                'DocumentController@show'],
+    ['GET',  '/documents/{id}/preview',        'DocumentController@preview'],
+    ['GET',  '/documents/{id}/download',       'DocumentController@download'],
+    ['GET',  '/api/subjects',                  'CategoryController@apiSubjects'],
+    ['GET',  '/api/ai/history',                'AiChatController@history'],
+    ['POST', '/api/ai/chat',                   'AiChatController@chat'],
+    ['POST', '/api/ai/clear',                  'AiChatController@clear'],
+    ['GET',  '/users/{id}/avatar',             'ProfileController@avatar'],
+
+    // Auth routes
+    ['GET',  '/login',                         'AuthController@loginForm'],
+    ['POST', '/login',                         'AuthController@login'],
+    ['GET',  '/register',                      'AuthController@registerForm'],
+    ['POST', '/register',                      'AuthController@register'],
+    ['POST', '/logout',                        'AuthController@logout'],
+    ['GET',  '/forgot-password',               'AuthController@forgotForm'],
+    ['POST', '/forgot-password',               'AuthController@forgot'],
+    ['GET',  '/reset-password/{token}',        'AuthController@resetForm'],
+    ['POST', '/reset-password',                'AuthController@reset'],
+
+    // Member routes (require login)
+    ['GET',  '/documents/{id}/edit',           'DocumentController@edit'],
+    ['POST', '/documents/{id}/update',         'DocumentController@update'],
+    ['POST', '/documents/{id}/delete',         'DocumentController@destroy'],
+    ['POST', '/documents/{id}/comment',        'CommentController@store'],
+    ['POST', '/comments/{id}/delete',          'CommentController@destroy'],
+    ['POST', '/documents/{id}/favorite',       'FavoriteController@toggle'],
+
+    // Profile routes
+    ['GET',  '/profile',                       'ProfileController@show'],
+    ['GET',  '/profile/edit',                  'ProfileController@editForm'],
+    ['POST', '/profile/update',                'ProfileController@update'],
+    ['POST', '/profile/change-password',       'ProfileController@changePassword'],
+    ['GET',  '/my-documents',                  'ProfileController@myDocuments'],
+    ['GET',  '/favorites',                     'ProfileController@favorites'],
+    ['GET',  '/history',                       'ProfileController@history'],
+    ['GET',  '/notifications',                 'ProfileController@notifications'],
+
+    // Admin routes
+    ['GET',  '/admin',                         'Admin\DashboardController@index'],
+    ['GET',  '/admin/users',                   'Admin\UserManageController@index'],
+    ['GET',  '/admin/users/{id}',              'Admin\UserManageController@show'],
+    ['POST', '/admin/users/{id}/toggle',       'Admin\UserManageController@toggleStatus'],
+    ['POST', '/admin/users/{id}/role',         'Admin\UserManageController@setRole'],
+    ['GET',  '/admin/documents',               'Admin\DocumentManageController@index'],
+    ['GET',  '/admin/moderation',              'Admin\ModerationController@index'],
+    ['POST', '/admin/documents/{id}/approve',  'Admin\ModerationController@approve'],
+    ['POST', '/admin/documents/{id}/reject',   'Admin\ModerationController@reject'],
+    ['POST', '/admin/documents/{id}/hide',     'Admin\ModerationController@hide'],
+    ['POST', '/admin/documents/{id}/unhide',   'Admin\ModerationController@unhide'],
+    ['POST', '/admin/documents/{id}/delete',   'Admin\DocumentManageController@destroy'],
+    ['GET',  '/admin/categories',              'Admin\CategoryManageController@index'],
+    ['POST', '/admin/faculties',               'Admin\CategoryManageController@storeFaculty'],
+    ['POST', '/admin/faculties/{id}/update',   'Admin\CategoryManageController@updateFaculty'],
+    ['POST', '/admin/faculties/{id}/toggle',   'Admin\CategoryManageController@toggleFaculty'],
+    ['POST', '/admin/faculties/{id}/delete',   'Admin\CategoryManageController@deleteFaculty'],
+    ['POST', '/admin/subjects',                'Admin\CategoryManageController@storeSubject'],
+    ['POST', '/admin/subjects/{id}/update',    'Admin\CategoryManageController@updateSubject'],
+    ['POST', '/admin/subjects/{id}/toggle',    'Admin\CategoryManageController@toggleSubject'],
+    ['POST', '/admin/subjects/{id}/delete',    'Admin\CategoryManageController@deleteSubject'],
+    ['POST', '/admin/document-types',          'Admin\CategoryManageController@storeType'],
+    ['POST', '/admin/document-types/{id}/update', 'Admin\CategoryManageController@updateType'],
+    ['POST', '/admin/document-types/{id}/toggle', 'Admin\CategoryManageController@toggleType'],
+    ['POST', '/admin/document-types/{id}/delete', 'Admin\CategoryManageController@deleteType'],
+    ['GET',  '/admin/statistics',              'Admin\StatisticsController@index'],
+];
+
