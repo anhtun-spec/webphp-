@@ -18,20 +18,7 @@ DROP TABLE IF EXISTS document_types;
 DROP TABLE IF EXISTS subjects;
 DROP TABLE IF EXISTS faculties;
 DROP TABLE IF EXISTS universities;
-DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS users;
-
--- ============================================================
--- ROLES
--- ============================================================
-CREATE TABLE roles (
-    id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name         VARCHAR(50) NOT NULL UNIQUE COMMENT 'admin | moderator | member',
-    display_name VARCHAR(100) NOT NULL,
-    description  TEXT,
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
 -- USERS
@@ -46,7 +33,7 @@ CREATE TABLE users (
     student_id          VARCHAR(20) DEFAULT NULL,
     bio                 TEXT DEFAULT NULL,
     status              ENUM('active','locked','pending') NOT NULL DEFAULT 'active',
-    role                VARCHAR(50) NOT NULL DEFAULT 'member' COMMENT 'Cached from roles for quick lookup',
+    role                ENUM('admin', 'moderator', 'member') NOT NULL DEFAULT 'member',
     email_verified_at   DATETIME DEFAULT NULL,
     reset_token         VARCHAR(100) DEFAULT NULL,
     reset_token_expires DATETIME DEFAULT NULL,
@@ -59,17 +46,6 @@ CREATE TABLE users (
     INDEX idx_username (username),
     INDEX idx_status (status),
     INDEX idx_role (role)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- USER_ROLES (many-to-many, for future multi-role support)
--- ============================================================
-CREATE TABLE user_roles (
-    user_id  INT UNSIGNED NOT NULL,
-    role_id  INT UNSIGNED NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -156,7 +132,6 @@ CREATE TABLE documents (
     checksum         VARCHAR(64) DEFAULT NULL COMMENT 'SHA-256 for duplicate detection',
 
     -- Metadata
-    academic_year    VARCHAR(10) DEFAULT NULL COMMENT 'e.g. 2023-2024',
     language         VARCHAR(10) NOT NULL DEFAULT 'vi',
 
     -- Status
@@ -168,9 +143,6 @@ CREATE TABLE documents (
     -- Stats
     view_count       INT UNSIGNED NOT NULL DEFAULT 0,
     download_count   INT UNSIGNED NOT NULL DEFAULT 0,
-
-    -- Version
-    current_version  INT NOT NULL DEFAULT 1,
 
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -200,7 +172,7 @@ CREATE TABLE comments (
     user_id     INT UNSIGNED NOT NULL,
     parent_id   INT UNSIGNED DEFAULT NULL COMMENT 'For threaded comments',
     content     TEXT NOT NULL,
-    is_hidden   TINYINT(1) NOT NULL DEFAULT 0,
+    is_deleted   TINYINT(1) NOT NULL DEFAULT 0,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
