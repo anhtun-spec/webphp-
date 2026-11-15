@@ -75,10 +75,6 @@ class Document extends Model
             $where[] = "d.document_type_id = ?";
             $params[] = (int)$filters['type_id'];
         }
-        if (!empty($filters['academic_year'])) {
-            $where[] = "d.academic_year = ?";
-            $params[] = $filters['academic_year'];
-        }
         if (!empty($filters['user_id'])) {
             $where[] = "d.user_id = ?";
             $params[] = (int)$filters['user_id'];
@@ -104,7 +100,7 @@ class Document extends Model
         $offset = ($page - 1) * $perPage;
         $sql = "SELECT d.id, d.title, d.slug, d.description, d.file_size, d.mime_type,
                        d.view_count, d.download_count,
-                       d.created_at, d.status, d.academic_year,
+                       d.created_at, d.status,
                        u.username, u.full_name AS uploader_name,
                        s.name AS subject_name,
                        f.name AS faculty_name, f.id AS faculty_id,
