@@ -7,6 +7,8 @@ use App\Core\Config;
 use App\Core\Controller;
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\MailService;
+use App\Services\OtpService;
 
 class AuthController extends Controller
 {
