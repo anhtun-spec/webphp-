@@ -307,8 +307,9 @@ class AuthController extends Controller
         }
 
         $data = $this->getJsonOrPost();
+        $currentPass = $data['current_password'] ?? '';
         $newPass = $data['new_password'] ?? '';
-        $confirm = $data['confirm_password'] ?? '';
+        $confirm = $data['new_password_confirmation'] ?? '';
 
         if (strlen($newPass) < 6 || $newPass !== $confirm) {
             $this->jsonResponse(['success' => false, 'message' => 'Mật khẩu mới tối thiểu 6 ký tự và phải khớp nhau.']);
