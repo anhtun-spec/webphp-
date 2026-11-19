@@ -10,7 +10,7 @@
                         <p class="text-muted">Tham gia cộng đồng học tập sinh viên TMU</p>
                     </div>
 
-                    <form action="<?= url('/register') ?>" method="POST" novalidate>
+                    <form id="registerForm" action="<?= url('/register') ?>" method="POST" novalidate>
                         <?= csrfField() ?>
 
                         <div class="mb-3">
@@ -96,5 +96,17 @@ document.getElementById('togglePwd')?.addEventListener('click', function() {
     const icon = this.querySelector('i');
     pwd.type = pwd.type === 'password' ? 'text' : 'password';
     icon.className = pwd.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+});
+</script>
+<?php include __DIR__ . '/../components/otp_modal.php'; ?>
+<script>
+document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(this).entries());
+    OtpManager.open({
+        sendUrl: '<?= url('/register/send-otp') ?>',
+        verifyUrl: '<?= url('/register/verify-otp') ?>',
+        payload: formData
+    });
 });
 </script>
