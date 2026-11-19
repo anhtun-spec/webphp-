@@ -138,4 +138,23 @@ class User extends Model
             ),
         ];
     }
+    public function saveResetToken(int $userId, string $token, string $expiresAt): bool
+    {
+        $stmt = $this->db->prepare("UPDATE users SET reset_token = :token, reset_token_expires = :expires WHERE id = :id");
+        return $stmt->execute([':token' => $token, ':expires' => $expiresAt, ':id' => $userId]);
+    }
+
+    public function findByValidResetToken(string $token): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE reset_token = :token AND reset_token_expires > NOW() LIMIT 1");
+        $stmt->execute([':token' => $token]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function updatePassword(int $userId, string $passwordHash): bool
+    {
+        $stmt = $this->db->prepare("UPDATE users SET password_hash = :hash, reset_token = NULL, reset_token_expires = NULL WHERE id = :id");
+        return $stmt->execute([':hash' => $passwordHash, ':id' => $userId]);
+    }
 }
