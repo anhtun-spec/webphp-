@@ -69,7 +69,7 @@
             <!-- Change Password -->
             <div class="card border-0 shadow-sm p-4">
                 <h4 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu</h4>
-                <form action="<?= url('/profile/change-password') ?>" method="POST">
+                <form id="changePasswordForm" action="<?= url('/profile/change-password') ?>" method="POST">
                     <?= csrfField() ?>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Mật khẩu hiện tại <span class="text-danger">*</span></label>
@@ -105,5 +105,17 @@ document.getElementById('toggleNewPwd')?.addEventListener('click', function() {
     const icon = this.querySelector('i');
     pwd.type = pwd.type === 'password' ? 'text' : 'password';
     icon.className = pwd.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+});
+</script>
+<?php include __DIR__ . '/../components/otp_modal.php'; ?>
+<script>
+document.getElementById('changePasswordForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(this).entries());
+    OtpManager.open({
+        sendUrl: '<?= url('/change-password/send-otp') ?>',
+        verifyUrl: '<?= url('/change-password/verify-otp') ?>',
+        payload: formData
+    });
 });
 </script>
