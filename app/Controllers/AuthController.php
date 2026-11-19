@@ -231,16 +231,24 @@ class AuthController extends Controller
     }
 
     // --- 1. ĐĂNG KÝ VỚI OTP ---
-    public function registerSendOtp(): void
+   public function registerSendOtp(): void
     {
-        $data     = $this->getJsonOrPost();
-        $fullName = trim($data['full_name'] ?? '');
-        $username = trim($data['username'] ?? '');
-        $email    = trim($data['email'] ?? '');
-        $password = $data['password'] ?? '';
+        $data            = $this->getJsonOrPost();
+        $fullName        = trim($data['full_name'] ?? '');
+        $username        = trim($data['username'] ?? '');
+        $studentId       = strtoupper(trim($data['student_id'] ?? ''));
+        $email           = trim($data['email'] ?? '');
+        $password        = $data['password'] ?? '';
+        $passwordConfirm = $data['password_confirmation'] ?? '';
 
-        if (!$fullName || !$username || !$email || strlen($password) < 6) {
-            $this->jsonResponse(['success' => false, 'message' => 'Vui lòng nhập đủ thông tin (mật khẩu >= 6 ký tự).']);
+        if (!$fullName || !$username || !$studentId || !$email || !$password) {
+            $this->jsonResponse(['success' => false, 'message' => 'Vui lòng nhập đầy đủ tất cả các trường bắt buộc.']);
+        }
+        if (strlen($password) < 8) {
+            $this->jsonResponse(['success' => false, 'message' => 'Mật khẩu phải có ít nhất 8 ký tự.']);
+        }
+        if ($password !== $passwordConfirm) {
+            $this->jsonResponse(['success' => false, 'message' => 'Xác nhận mật khẩu không khớp.']);
         }
         if (!str_ends_with(strtolower($email), '@tmu.edu.vn')) {
             $this->jsonResponse(['success' => false, 'message' => 'Chỉ chấp nhận email sinh viên @tmu.edu.vn.']);
@@ -253,6 +261,7 @@ class AuthController extends Controller
         $gen = $otpService->generate('register', [
             'full_name'     => $fullName,
             'username'      => $username,
+            'student_id'    => $studentId,
             'email'         => $email,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
         ]);
